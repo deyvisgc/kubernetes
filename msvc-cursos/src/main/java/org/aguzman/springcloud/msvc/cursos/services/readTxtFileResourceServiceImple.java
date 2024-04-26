@@ -25,7 +25,7 @@ public class readTxtFileResourceServiceImple implements TxtFileReaderService{
             String linea;
             int numeroLinea = 0;
             int paginaActual = 1; // Página actual
-            int lineasProcesadas = 0; // Número de líneas procesadas hasta ahora
+            int lineasProcesadas = 0; // Número de líneas procesadas
             List<Banca> bancaPaginaActual = new ArrayList<>(); // Lista temporal para almacenar las bancas de la página actual
             while ((linea = reader.readLine()) != null && paginaActual <= paginaFinal) {
                 if (numeroLinea > 0) {
@@ -41,11 +41,9 @@ public class readTxtFileResourceServiceImple implements TxtFileReaderService{
                         lineasProcesadas++;
 
                         if (lineasProcesadas % lineasPorPagina == 0) {
-                            // Si hemos alcanzado el final de una página, añadimos las bancas de esta página a la lista de bancas
+                            // Si alcanzado el final de una página, añadimos las bancas temporal a la lista de bancas
                             listBanca.addAll(bancaPaginaActual);
-                            // Limpiamos la lista para la próxima página
                             bancaPaginaActual.clear();
-                            // Incrementamos el número de página actual
                             paginaActual++;
                         }
                     }
@@ -53,7 +51,7 @@ public class readTxtFileResourceServiceImple implements TxtFileReaderService{
                 numeroLinea++;
             }
         } catch (IOException e) {
-            // Manejo de excepciones
+            throw new EOFException(e.getMessage());
         }
         return listBanca;
     }
