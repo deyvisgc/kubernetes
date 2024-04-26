@@ -1,5 +1,6 @@
 package org.aguzman.springcloud.msvc.cursos.services;
 
+import org.aguzman.springcloud.msvc.cursos.dto.PaginateDto;
 import org.aguzman.springcloud.msvc.cursos.entity.Banca;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -17,8 +18,9 @@ public class readTxtFileResourceServiceImple implements TxtFileReaderService{
     @Autowired
     private ResourceLoader resourceLoader;
     @Override
-    public List<Banca> readTxtFileFromResources(String fileName, int lineasPorPagina, int paginaFinal) throws IOException {
+    public PaginateDto readTxtFileFromResources(String fileName, int lineasPorPagina, int paginaFinal) throws IOException {
         Resource resource = resourceLoader.getResource("classpath:" + fileName);
+        PaginateDto paginate = new PaginateDto();
         List<Banca> listBanca = new ArrayList<>();
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
@@ -50,9 +52,13 @@ public class readTxtFileResourceServiceImple implements TxtFileReaderService{
                 }
                 numeroLinea++;
             }
+            paginate.setBancas(listBanca);
+            paginate.setTotalRegistros(listBanca.size());
+            paginate.setLimit(lineasPorPagina);
+            paginate.setPagina(paginaFinal);
         } catch (IOException e) {
             throw new EOFException(e.getMessage());
         }
-        return listBanca;
+        return paginate;
     }
 }
