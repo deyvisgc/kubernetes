@@ -26,9 +26,9 @@ public class CursoController {
     private TxtFileReaderService txtFileReaderService;
 
     @GetMapping("/readTxtFile")
-    public ResponseEntity<?> readTxtFile() {
+    public ResponseEntity<?> readTxtFile(@RequestParam(name = "pagina", defaultValue = "1") int pagina, @RequestParam(name = "limit", defaultValue = "10") int limit) {
         try {
-            return ResponseEntity.ok(txtFileReaderService.readTxtFileFromResources("archivo.txt", 10, 4));
+            return ResponseEntity.ok(txtFileReaderService.readTxtFileFromResources("archivo.txt", pagina, limit));
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.notFound().build();
